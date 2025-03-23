@@ -8,10 +8,6 @@
       content="width=device-width, initial-scale=1.0, viewport-fit=cover"
     />
     <meta name="Description" content="Demonstration for rpg-character" />
-    <script
-      type="module"
-      src="https://cdn.hax.cloud/cdn/build/es6/node_modules/@haxtheweb/rpg-character/rpg-character.js"
-    ></script>
 
     <style>
       :root,
@@ -43,13 +39,13 @@
   <body>
     <div id="demo">
       <h1>rpg-character</h1>
-      <!-- this is going to do whatever the tag's defaults are -->
       <rpg-character
         organization="haxtheweb"
         repo="webcomponents"
         limit="10"
       ></rpg-character>
+      <rpg-character organization="test" repo="test" limit="10"></rpg-character>
+      <script type="module" src="./github-rpg-contributors.js"></script>
     </div>
-    <script type="module" src="./rpg-character.js"></script>
   </body>
 </html>

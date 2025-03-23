@@ -5,6 +5,7 @@
 import { LitElement, html, css } from "lit";
 import { DDDSuper } from "@haxtheweb/d-d-d/d-d-d.js";
 import { I18NMixin } from "@haxtheweb/i18n-manager/lib/I18NMixin.js";
+import "@haxtheweb/rpg-character/rpg-character.js";
 
 /**
  * `rpg-character`
@@ -19,128 +20,128 @@ export class RpgCharacter extends DDDSuper(I18NMixin(LitElement)) {
 
   constructor() {
     super();
+    this.items = [];
     this.organization = "";
     this.repo = "";
-    this.limit = 6;
-    this.contributors = [];
+    this.limit = 25;
+    this.title = "";
+    this.t = this.t || {};
+    this.t = {
+      ...this.t,
+      title: "Title",
+    };
   }
 
   // Lit reactive properties
   static get properties() {
     return {
       ...super.properties,
+      title: { type: String },
+      items: { type: Array },
       organization: { type: String },
       repo: { type: String },
       limit: { type: Number },
-      contributors: { type: Array },
     };
   }
 
-  // Lit scoped styles
+  // Lit scoped styles (edit once it starts working)
   static get styles() {
     return [
       super.styles,
       css`
         :host {
           display: block;
-          color: var(--ddd-theme-primary);
-          background-color: var(--ddd-theme-accent);
           font-family: var(--ddd-font-navigation);
-          padding: 10px;
         }
-        .contributor {
-          margin-bottom: 15px;
-        }
-        .contributors-list {
-          text-align: center;
+        .wrapper {
           margin: var(--ddd-spacing-2);
           padding: var(--ddd-spacing-4);
         }
-        input {
+        h3 span {
           font-size: var(
             --rpg-character-label-font-size,
             var(--ddd-font-size-s)
           );
-          margin-bottom: 20px;
-          padding: 10px;
-          font-size: 16px;
-          width: 100%;
-          max-width: 300px;
+        }
+        .rpg-wrapper {
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: center;
+        }
+        .contributor-details {
+          display: flex;
+          flex-direction: column;
+          margin: var(--ddd-spacing-3);
+        }
+        .contributor-card {
+          padding: var(--ddd-spacing-3);
+          text-align: center;
+          min-width: 176px;
+        }
+        .header {
+          text-align: center;
+        }
+        h3 {
+          display: inline-block;
         }
       `,
     ];
   }
 
-  // Lit render the HTML
-  render() {
-    return html` <h2>
-        GitHub Contributors for ${this.organization} / ${this.repo}
-      </h2>
-      <details open>
-        <summary>Search Inputs</summary>
-        <div>
-          <input
-            id="organization"
-            placeholder="Enter organization name"
-            @input="${this.organizationChange}"
-          />
-        </div>
-        <div>
-          <input
-            id="repo"
-            placeholder="Enter repository"
-            @input="${this.repoChange}"
-          />
-        </div>
-      </details>
-      <div class="contributors-list">
-        ${this.contributors.map(
-          (contributor, index) => html`
-            //i googled this
-            <div class="contributor">
-              <a href="https://github.com/${contributor.login}" target="_blank">
-                <rpg-character
-                  seed="${contributor.login}"
-                  hat="construction"
-                ></rpg-character>
-              </a>
-              <div>${contributor.login}</div>
-              <div>Contributions: ${contributor.contributions}</div>
-            </div>
-          `
-        )}
-      </div>`;
-  }
-
-  organizationChange(e) {
-    this.organization = e.target.value;
-    this.updateResults();
-  }
-
-  repoChange(e) {
-    this.repo = e.target.value;
-    this.updateResults();
-  }
-
+  // used google for help
   updated(changedProperties) {
+    super.updated(changedProperties);
     if (
       changedProperties.has("organization") ||
       changedProperties.has("repo")
     ) {
-      this.updateResults();
+      this.getData();
     }
   }
-
-  async updateResults() {
-    if (this.organization && this.repo) {
-      const response = await fetch(
-        `https://api.github.com/repos/${this.organization}/${this.repo}/contributors`
-      );
-      if (response.ok) {
-        const data = await response.json();
-        this.contributors = data;
-      }
+  getData() {
+    const url = `https://api.github.com/repos/${this.organization}/${this.repo}/contributors`;
+    try {
+      fetch(url)
+        .then((d) => (d.ok ? d.json() : {}))
+        .then((data) => {
+          if (data) {
+            this.items = [];
+            this.items = data;
+          }
+        });
+    } catch (error) {
+      console.error("ERROR");
     }
+  }
+  // Lit render the HTML (needs work)
+
+  render() {
+    return html`
+      <div class="header">
+        <h3>
+          Repo:
+          <a href="https://github.com/${this.organization}/${this.repo}">
+            ${this.organization}/${this.repo}
+          </a>
+        </h3>
+      </div>
+      <slot></slot>
+      <div class="rpg-wrapper">
+        ${this.items
+          .filter((item, index) => index < this.limit)
+          .map(
+            (item) => html`
+              <div class="contributor-card">
+                <rpg-character seed="${item.login}"></rpg-character>
+                <div class="contributor-details">
+                  <a href="https://github.com/${item.login}">${item.login}</a>
+                  Contributions: ${item.contributions}
+                </div>
+              </div>
+            `
+          )}
+      </div>
+    `;
   }
 
   /**
