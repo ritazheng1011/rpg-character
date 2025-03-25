@@ -13,8 +13,8 @@
       :root,
       html,
       body {
-        margin: 0;
-        padding: 0;
+        margin: var(--ddd-spacing-0);
+        padding: var(--ddd-spacing-0);
       }
       #demo {
         margin: var(--ddd-spacing-2);
@@ -38,13 +38,17 @@
 
   <body>
     <div id="demo">
-      <h1>rpg-character</h1>
-      <rpg-character
-        organization="haxtheweb"
+      <h1>github-rpg-contributors</h1>
+      <github-rpg-contributors
+        org="haxtheweb"
         repo="webcomponents"
         limit="10"
-      ></rpg-character>
-      <rpg-character organization="test" repo="test" limit="10"></rpg-character>
+      ></github-rpg-contributors>
+      <github-rpg-contributors
+        org="joanrod"
+        repo="star-vector"
+        limit="10"
+      ></github-rpg-contributors>
       <script type="module" src="./github-rpg-contributors.js"></script>
     </div>
   </body>
