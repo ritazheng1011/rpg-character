@@ -27,8 +27,8 @@
     "test:watch": "web-test-runner test/**/*.test.js --node-resolve --watch"
   },
   "dependencies": {
-    "@haxtheweb/d-d-d": "^9.0.21",
-    "@haxtheweb/i18n-manager": "^9.0.18",
+    "@haxtheweb/d-d-d": "^10.0.2",
+    "@haxtheweb/i18n-manager": "^10.0.2",
     "@haxtheweb/rpg-character": "^10.0.2",
     "lit": "^3.2.1"
   },

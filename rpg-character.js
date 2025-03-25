@@ -8,10 +8,10 @@ import { I18NMixin } from "@haxtheweb/i18n-manager/lib/I18NMixin.js";
 import "@haxtheweb/rpg-character/rpg-character.js";
 
 /**
- * `github-rpg-contributors`
+ * `rpg-character`
  *
  * @demo index.html
- * @element github-rpg-contributors
+ * @element rpg-character
  */
 export class GithubRpgContributors extends DDDSuper(I18NMixin(LitElement)) {
   static get tag() {
@@ -128,7 +128,8 @@ export class GithubRpgContributors extends DDDSuper(I18NMixin(LitElement)) {
         ${this.items
           .filter((item, index) => index < this.limit)
           .map(
-            (item) => html`
+            (item) =>
+              html`
               <div class="character">
                 <rpg-character seed="${item.login}"></rpg-character>
                 <div class="contributor-details">
